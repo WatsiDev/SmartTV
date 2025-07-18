@@ -10,3 +10,12 @@ object Home
 
 @Serializable
 object Menu
+
+@Serializable
+object Music
+
+@Serializable
+object Video
+
+@Serializable
+object Recipe
