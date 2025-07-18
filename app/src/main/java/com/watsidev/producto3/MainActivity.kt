@@ -21,6 +21,10 @@ import com.watsidev.producto3.ui.navigation.Music
 import com.watsidev.producto3.ui.navigation.Recipe
 import com.watsidev.producto3.ui.navigation.Video
 import com.watsidev.producto3.ui.screens.CoverScreen
+import com.watsidev.producto3.ui.screens.home.DetailScreen
+import com.watsidev.producto3.ui.screens.home.DetailStreaming
+import com.watsidev.producto3.ui.screens.home.SearchMovies
+import com.watsidev.producto3.ui.screens.home.SearchScreen
 import com.watsidev.producto3.ui.screens.home.VideoScreen
 import com.watsidev.producto3.ui.screens.menu.MenuAppScreen
 import com.watsidev.producto3.ui.screens.music.MusicScreen
@@ -75,8 +79,62 @@ fun App() {
                 MusicScreen()
             }
             composable<Video> {
-                VideoScreen()
+                VideoScreen(
+                    onGoTitle = { id ->
+                        navController.navigate(DetailStreaming(id = id))
+                    },
+                    onSearchMovie = { movie -> navController.navigate(SearchMovies(movie)) },
+                    onHomeClick = {
+                        navController.navigate(Video) {
+                            popUpTo(Video) {
+                                inclusive = true  // Elimina Video si ya estaba en el backstack
+                            }
+                            launchSingleTop = true // Evita múltiples instancias de Video
+                        }
+                    }
+                )
             }
+                composable<DetailStreaming> {
+                    val detailStreaming: DetailStreaming = it.toRoute()
+                    DetailScreen(
+                        id = detailStreaming.id,
+                        onGoTitle = { id ->
+                            navController.navigate(DetailStreaming(id = id)) {
+                                popUpTo(Video) { inclusive = false } // Preserva VideoScreen al fondo
+                                launchSingleTop = true
+                            }
+                        },
+                        onSearchMovie = { movie -> navController.navigate(SearchMovies(movie)) },
+                                onHomeClick = {
+                            navController.navigate(Video) {
+                                popUpTo(Video) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<SearchMovies> {
+                    val searchMovies: SearchMovies = it.toRoute()
+                    SearchScreen(
+                        query = searchMovies.query,
+                        onGoTitle = { id ->
+                            navController.navigate(DetailStreaming(id = id)) {
+                                popUpTo(Video) { inclusive = false } // Preserva VideoScreen al fondo
+                                launchSingleTop = true
+                            }
+                        },
+                        onHomeClick = {
+                            navController.navigate(Video) {
+                                popUpTo(Video) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
             composable<Recipe> {
                 RecipeHomeScreen(
                     viewModel = recipeViewModel,

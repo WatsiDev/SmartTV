@@ -12,11 +12,11 @@ data class App(
 )
 
 val appsList = listOf(
-    App(
-        id = 1,
-        imageRes = R.drawable.music,
-        route = Music
-    ),
+//    App(
+//        id = 1,
+//        imageRes = R.drawable.music,
+//        route = Music
+//    ),
     App(
         id = 2,
         imageRes = R.drawable.youtube,
