@@ -1,6 +1,8 @@
 package com.watsidev.producto3.ui.screens.menu
 
+import com.watsidev.producto3.App
 import com.watsidev.producto3.R
+import com.watsidev.producto3.ui.navigation.Clima
 import com.watsidev.producto3.ui.navigation.Music
 import com.watsidev.producto3.ui.navigation.Recipe
 import com.watsidev.producto3.ui.navigation.Video
@@ -12,11 +14,11 @@ data class App(
 )
 
 val appsList = listOf(
-//    App(
-//        id = 1,
-//        imageRes = R.drawable.music,
-//        route = Music
-//    ),
+    App(
+        id = 1,
+        imageRes = R.drawable.music,
+        route = Music
+    ),
     App(
         id = 2,
         imageRes = R.drawable.youtube,
@@ -26,5 +28,10 @@ val appsList = listOf(
         id = 3,
         R.drawable.chef,
         route = Recipe
+    ),
+    App(
+        id = 4,
+        R.drawable.background,
+        route = Clima
     )
 )

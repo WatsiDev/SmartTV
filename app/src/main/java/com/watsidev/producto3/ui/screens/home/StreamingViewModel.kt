@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.watsidev.producto3.model.data.Movie
+import com.watsidev.producto3.model.data.movies.Movie
 import com.watsidev.producto3.model.network.MovieApiClient
 import kotlinx.coroutines.launch
 

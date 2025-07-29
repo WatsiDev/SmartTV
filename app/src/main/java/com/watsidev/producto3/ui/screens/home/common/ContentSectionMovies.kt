@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import com.watsidev.producto3.model.data.Movie
+import com.watsidev.producto3.model.data.movies.Movie
 
 @Composable
 fun ContentSectionMovies(title: String, items: List<Movie>, onGoTitle: (Int) -> Unit) {

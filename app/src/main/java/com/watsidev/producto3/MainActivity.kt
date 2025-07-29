@@ -15,19 +15,32 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
+import com.watsidev.producto3.ui.navigation.Clima
 import com.watsidev.producto3.ui.navigation.Cover
 import com.watsidev.producto3.ui.navigation.Menu
 import com.watsidev.producto3.ui.navigation.Music
 import com.watsidev.producto3.ui.navigation.Recipe
 import com.watsidev.producto3.ui.navigation.Video
 import com.watsidev.producto3.ui.screens.CoverScreen
+import com.watsidev.producto3.ui.screens.clima.WeatherScreenTV
 import com.watsidev.producto3.ui.screens.home.DetailScreen
 import com.watsidev.producto3.ui.screens.home.DetailStreaming
 import com.watsidev.producto3.ui.screens.home.SearchMovies
 import com.watsidev.producto3.ui.screens.home.SearchScreen
 import com.watsidev.producto3.ui.screens.home.VideoScreen
 import com.watsidev.producto3.ui.screens.menu.MenuAppScreen
+import com.watsidev.producto3.ui.screens.music.LikedScreen
+import com.watsidev.producto3.ui.screens.music.LikedSongs
+import com.watsidev.producto3.ui.screens.music.MusicPlayer
 import com.watsidev.producto3.ui.screens.music.MusicScreen
+import com.watsidev.producto3.ui.screens.music.MyAccountMusic
+import com.watsidev.producto3.ui.screens.music.MyAccountScreen
+import com.watsidev.producto3.ui.screens.music.PlayerFullScreen
+import com.watsidev.producto3.ui.screens.music.PlayerViewModel
+import com.watsidev.producto3.ui.screens.music.Playlist
+import com.watsidev.producto3.ui.screens.music.PlaylistScreen
+import com.watsidev.producto3.ui.screens.music.SearchMusic
+import com.watsidev.producto3.ui.screens.music.SearchMusicScreen
 import com.watsidev.producto3.ui.screens.recipe.Detail
 import com.watsidev.producto3.ui.screens.recipe.Favorites
 import com.watsidev.producto3.ui.screens.recipe.FavoritesScreen
@@ -57,6 +70,8 @@ class MainActivity : ComponentActivity() {
 fun App() {
     val navController = rememberNavController()
     val recipeViewModel: RecipeViewModel = viewModel()
+    val playerViewModel: PlayerViewModel = viewModel()
+
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -70,14 +85,94 @@ fun App() {
                     onClick = { navController.navigate(Menu) }
                 )
             }
+            composable<Clima> {
+                WeatherScreenTV(
+                   onBackToMenu = { navController.popBackStack() }
+                )
+            }
             composable<Menu> {
                 MenuAppScreen(
                     onAppClick = { app -> navController.navigate(app) }
                 )
             }
             composable<Music> {
-                MusicScreen()
+                MusicScreen(
+                    onClick = { route ->
+                        navController.navigate(route) {
+                            popUpTo<Music> { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    },
+                    onClickCover = { idCover ->
+                        navController.navigate(LikedSongs(idCover.toString())) {
+                            popUpTo<Music> { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
+                composable<Playlist> {
+                    PlaylistScreen(
+                        onClick = { route ->
+                            navController.navigate(route) {
+                                popUpTo<Music> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        onClickPlaylist = { idPlaylist ->
+                            navController.navigate(LikedSongs(idPlaylist)) {
+                                popUpTo<Music> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<MyAccountMusic> {
+                    MyAccountScreen(
+                        onClick = { route ->
+                            navController.navigate(route) {
+                                popUpTo<Music> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<LikedSongs> {
+                    val likedSongs: LikedSongs = it.toRoute()
+                    LikedScreen(
+                        idPlaylist = likedSongs.id,
+                        onClick = { route ->
+                            navController.navigate(route) {
+                                popUpTo<Music> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        },
+                        onPlayMusic = { idSong ->
+                            val isFromFavorites = likedSongs.id == null
+                            navController.navigate(MusicPlayer(idSong, isFromFavorites)) {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<SearchMusic> {
+                    SearchMusicScreen(
+                        onClick = { route ->
+                            navController.navigate(route) {
+                                popUpTo<Music> { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+                composable<MusicPlayer> {
+                    val musicPlayer: MusicPlayer = it.toRoute()
+                    PlayerFullScreen(
+                        idSong = musicPlayer.id,
+                        viewModel = playerViewModel,
+                        fromFavorites = musicPlayer.fromFavorites
+                    )
+                }
             composable<Video> {
                 VideoScreen(
                     onGoTitle = { id ->

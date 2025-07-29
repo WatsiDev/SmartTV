@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
@@ -85,12 +86,12 @@ fun TopNavBar(
                 Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                painter = painterResource(id = R.drawable.avatar), // imagen del usuario
-                contentDescription = "User avatar",
+            Icon(
+                Icons.Outlined.AccountCircle,
+                contentDescription = null,
                 modifier = Modifier
                     .size(36.dp)
-                    .clip(CircleShape)
+
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text("watsibienwatsimal", color = Color.White)

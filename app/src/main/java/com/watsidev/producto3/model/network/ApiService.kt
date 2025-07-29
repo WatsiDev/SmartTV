@@ -1,7 +1,7 @@
 package com.watsidev.producto3.model.network
 
-import com.watsidev.producto3.model.data.Movie
-import com.watsidev.producto3.model.data.MovieResponse
+import com.watsidev.producto3.model.data.movies.Movie
+import com.watsidev.producto3.model.data.movies.MovieResponse
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

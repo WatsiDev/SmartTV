@@ -25,9 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
-import com.watsidev.producto3.model.data.Movie
 import com.watsidev.producto3.ui.screens.home.common.TopNavBar
-import retrofit2.http.Query
 
 @Composable
 fun SearchScreen(

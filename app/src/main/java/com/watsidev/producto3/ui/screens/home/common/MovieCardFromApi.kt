@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.watsidev.producto3.model.data.Movie
+import com.watsidev.producto3.model.data.movies.Movie
 
 @Composable
 fun MovieCardFromApi(movie: Movie, onGoTitle: (Int) -> Unit) {

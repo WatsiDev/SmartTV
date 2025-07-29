@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object Cover
 
 @Serializable
-object Home
+object Clima
 
 @Serializable
 object Menu

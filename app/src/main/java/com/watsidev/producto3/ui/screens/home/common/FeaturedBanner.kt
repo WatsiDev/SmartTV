@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
-import com.watsidev.producto3.model.data.Movie
+import com.watsidev.producto3.model.data.movies.Movie
 
 @Composable
 fun FeaturedBanner(movie: Movie) {
