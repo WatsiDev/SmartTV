@@ -17,12 +17,16 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
 import com.watsidev.producto3.ui.navigation.Clima
 import com.watsidev.producto3.ui.navigation.Cover
+import com.watsidev.producto3.ui.navigation.Game
 import com.watsidev.producto3.ui.navigation.Menu
 import com.watsidev.producto3.ui.navigation.Music
+import com.watsidev.producto3.ui.navigation.PlayGame
 import com.watsidev.producto3.ui.navigation.Recipe
 import com.watsidev.producto3.ui.navigation.Video
 import com.watsidev.producto3.ui.screens.CoverScreen
 import com.watsidev.producto3.ui.screens.clima.WeatherScreenTV
+import com.watsidev.producto3.ui.screens.game.MemoryGridGame
+import com.watsidev.producto3.ui.screens.game.SciFiMainMenu
 import com.watsidev.producto3.ui.screens.home.DetailScreen
 import com.watsidev.producto3.ui.screens.home.DetailStreaming
 import com.watsidev.producto3.ui.screens.home.SearchMovies
@@ -259,6 +263,20 @@ fun App() {
                         onClose = { navController.popBackStack() }
                     )
                 }
+            composable<Game> {
+//                GameScreen(
+//                    onPlayGame = { navController.navigate(PlayGame) }
+//                )
+                SciFiMainMenu(
+                    onStartGame = { navController.navigate(PlayGame) },
+                    onQuitGame = { navController.popBackStack() }
+                )
+            }
+            composable<PlayGame> {
+                MemoryGridGame(
+                    onExit = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

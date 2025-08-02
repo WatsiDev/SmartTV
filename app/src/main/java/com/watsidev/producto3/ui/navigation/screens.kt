@@ -19,3 +19,9 @@ object Video
 
 @Serializable
 object Recipe
+
+@Serializable
+object Game
+
+@Serializable
+object PlayGame

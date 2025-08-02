@@ -1,10 +1,13 @@
 package com.watsidev.producto3.ui.screens.menu
 
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,9 +25,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,12 +48,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.watsidev.producto3.R
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MenuAppScreen(
@@ -75,39 +84,85 @@ fun MenuAppScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 64.dp, start = 48.dp, end = 48.dp)
+                .padding(top = 64.dp, start = 48.dp, end = 48.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Mis aplicaciones",
-                    color = Color.White,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = time.value.format(DateTimeFormatter.ofPattern("HH:mm")),
-                    color = Color.White,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            stickyHeader {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Aplicaciones",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Icon(
+                        Icons.Outlined.Wifi,
+                        contentDescription = "WIFI",
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(20.dp)
+                    )
+                    Text(
+                        text = time.value.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(appsList) { app ->
-                    AppBanner(app = app, onAppClick = { onAppClick(it) })
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(appsList) { app ->
+                        AppBanner(app = app, onAppClick = { onAppClick(it) })
+                    }
+                }
+            }
+            item {
+                Text(
+                    "Recientes"
+                )
+            }
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(intentAppList) { app ->
+                        AppBanner(app = app, onAppClick = { onAppClick(it) })
+                    }
+                }
+            }
+            item {
+                Text(
+                    "Entrada"
+                )
+            }
+            item {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                ) {
+                    items(settingsIcons) { app ->
+                        AppBanner(app = app, onAppClick = {/*NADA*/ })
+                    }
                 }
             }
         }
@@ -118,6 +173,7 @@ fun MenuAppScreen(
 fun AppBanner(app: App, onAppClick: (Any) -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    val context = LocalContext.current
 
     val scale by animateFloatAsState(
         targetValue = if (isFocused) 1.1f else 1f,
@@ -128,20 +184,32 @@ fun AppBanner(app: App, onAppClick: (Any) -> Unit) {
         targetValue = if (isFocused) 16.dp else 4.dp,
         animationSpec = tween(durationMillis = 200)
     )
-
     Image(
         painter = painterResource(app.imageRes),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .clickable { onAppClick(app.route) }
-            .size(width = 175.dp, height = 100.dp)
+            .clickable {
+                when (val route: Any? = app.route) {
+                    is String -> {
+                        // Es app externa → el String es el package name
+                        openExternalApp(context, route)
+                        Log.i("Intent", "La app externa es: $route")
+                    }
+
+                    else -> {
+                        // Es navegación interna → envías el objeto al callback
+                        route?.let { onAppClick(it) }
+                        Log.i("Intent", "Ruta interna con objeto: $route")
+                    }
+                }
+            }
+            .size(width = 170.dp, height = 95.dp)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             }
-            .clip(RoundedCornerShape(16.dp))
-            .shadow(elevation, RoundedCornerShape(16.dp))
+            .shadow(elevation, RoundedCornerShape(8.dp))
             .focusable(interactionSource = interactionSource)
     )
 }
